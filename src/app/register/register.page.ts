@@ -10,7 +10,6 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
-
   formularioRegistro:FormGroup;
   public usuarios: { username: string, email: string, password:string }[] = [];
 
@@ -39,11 +38,12 @@ export class RegisterPage implements OnInit {
       const newUser = {
         username: this.formularioRegistro.value.username,
         email: this.formularioRegistro.value.email,
-        password: this.formularioRegistro.value.password
+        password: this.formularioRegistro.value.password,
+        isadmin: 'false'
       };
 
       this.usuarios.push(newUser);
-      this.saveUsers();
+      this.saveUsers(newUser);
       this.router.navigate(['/login']);
       console.log('Datos guardados');
 
@@ -53,9 +53,12 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  saveUsers() {
-    this.gestionEventosService.update('usuarios', this.usuarios);
-  }
+  saveUsers(newUser: any) {
+    const storedUsuarios = this.gestionEventosService.read('usuarios') || [];
+    storedUsuarios.push(newUser);
+    this.gestionEventosService.update('usuarios', storedUsuarios);
+}
+
 
   loadUsers() {
     const storedProductos = this.gestionEventosService.read('usuarios');

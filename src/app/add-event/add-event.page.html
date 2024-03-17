@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Examen U2</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>Enter the event data below.</ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="addEventForm" (ngSubmit)="addEvent()">
+  
+        <ion-item>
+          <ion-input label="Name" formControlName="name" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Date" formControlName="date" type="text"></ion-input>
+        </ion-item>
+      
+        <ion-button type="submit" expand="full" [disabled]="addEventForm.invalid">Add event</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

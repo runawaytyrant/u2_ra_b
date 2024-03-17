@@ -1,21 +1,67 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>
-      Examen U2
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="outline" [routerLink]="['/add']">
-        Crear evento
-        <ion-icon slot="end" name="add"></ion-icon>
+    <ion-buttons slot="start">
+      <ion-button (click)="logOut()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-title>Examen U2</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <p>&NonBreakingSpace; Welcome, {{username}}!</p>
+  <ion-list lines="full" [inset]="true">
+    <ion-item *ngFor="let event of eventos; let i = index" [button]="true">
+      <ion-label (click)="openFeedbackModal(true)">{{ event.name }} - {{ event.date }}</ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="addParticipant(i)" [disabled]="event.participating">
+          <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="deleteParticipant(i)" [disabled]="!event.participating">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <!--- Código QR --->
+  <div class="qr-code-container">
+    <div id="qrcode"></div>
+  </div>  
+
+  <!--- Encuesta --->
+  <ion-modal [isOpen]="isFeedbackModalOpen" cssClass="full-screen-modal-wrapper">
+    <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Event feedback</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="openFeedbackModal(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form [formGroup]="feedbackForm" (ngSubmit)="recordFeedback()">
+        <ion-item>
+          <ion-label position="floating">How satisfied are you with the event?</ion-label>
+          <ion-input formControlName="overallExperience" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">How did you find out about the event?</ion-label>
+          <ion-input formControlName="discoveryMethod" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Why did you decide to attend the event?</ion-label>
+          <ion-input formControlName="reasonForAttending" type="text"></ion-input>
+        </ion-item>
+        <ion-button type="submit" expand="full">Send feedback</ion-button>
+      </form>
+    </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="full" (click)="onClickGenerateQRCode(username)" [disabled]="qrCodeGenerated">Generate QR code</ion-button>
+</ion-footer>
